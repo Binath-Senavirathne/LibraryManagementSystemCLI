@@ -43,6 +43,25 @@ def student_menu():
             print("Invalid choice")
 
 
+def transaction_menu():
+    while True:
+        print("\n--- Transactions ---")
+        print("1. Issue Book")
+        print("2. Return Book")
+        print("3. Back")
+
+        choice = input("Enter choice: ")
+
+        if choice == "1":
+            issue_book()
+        elif choice == "2":
+            return_book()
+        elif choice == "3":
+            break
+        else:
+            print("Invalid choice")
+
+
 def main():
     while True:
         print("\nLibrary Management System")
