@@ -1,5 +1,7 @@
 from book import add_book, view_books, search_book, edit_book
+from graph import generate_graph
 from student import add_student
+from transaction import issue_book, return_book
 
 
 def book_menu():
@@ -68,7 +70,8 @@ def main():
         print("1. Manage Books")
         print("2. Manage Students")
         print("3. Transactions")
-        print("4. Exit")
+        print("4. Generate Trend Graph")
+        print("5. Exit")
 
         choice = input("Enter Choice: ")
 
@@ -79,6 +82,8 @@ def main():
         elif choice == "3":
             transaction_menu()
         elif choice == "4":
+            generate_graph()
+        elif choice == "5.":
             print("Exit from the System")
             break
         else:
