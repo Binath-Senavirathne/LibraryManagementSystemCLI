@@ -1,83 +1,48 @@
-import csv
-import re
-import os
-from book import load_books, save_books
-from student import load_students
+from file_handler import load_csv, save_csv
+from validation import *
 
-FILE_PATH = "../data/transactions.csv"
-
-def validate_date(date):
-    return bool(re.fullmatch(r"\d{2}/\d{2}/\d{4}", date))
-
-
-def load_transactions():
-    transactions = []
-    if not os.path.exists(FILE_PATH):
-        return transactions
-
-    with open(FILE_PATH, mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            transactions.append(row)
-    return transactions
-
-
-def save_transactions(transactions):
-    with open(FILE_PATH, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(transactions)
+BOOK_FILE = "../data/book.csv"
+STUDENT_FILE = "../data/student.csv"
+TRANS_FILE = "../data/transactions.csv"
 
 
 def issue_book():
-    book_id = input("Enter Book ID: ")
-    student_id = input("Enter Student ID: ")
-    date = input("Enter Date (DD/MM/YYYY): ")
+    book_id = input("Book ID: ")
+    student_id = input("Student ID: ")
+    date = input("Date: ")
 
     if not validate_date(date):
-        print("Invalid Date")
+        print("Invalid date")
         return
 
-    books = load_books()
-    students = load_students()
-    transactions = load_transactions()
+    books = load_csv(BOOK_FILE)
+    students = load_csv(STUDENT_FILE)
+    transactions = load_csv(TRANS_FILE)
 
-    # Check book exists
-    book_found = None
-    for book in books:
-        if book[0] == book_id:
-            book_found = book
-            break
-
-    if not book_found:
-        print("Invalid Book ID")
+    book = next((b for b in books if b[0] == book_id), None)
+    if not book:
+        print("Invalid book ID")
         return
 
-    # Check student exists
-    student_found = any(student[0] == student_id for student in students)
-    if not student_found:
-        print("Invalid Student ID")
+    if not any(s[0] == student_id for s in students):
+        print("Invalid student ID")
         return
 
-    # Check already issued
-    for t in transactions:
-        if t[1] == book_id and t[2] == student_id and t[3] == "1":
-            print("Book already issued to this student")
-            return
-
-    # Check availability
-    if int(book_found[5]) <= 0:
-        print("No copies available")
+    if any(t[1] == book_id and t[2] == student_id and t[3] == "1" for t in transactions):
+        print("Book already issued")
         return
 
-    # Update availability
-    book_found[5] = str(int(book_found[5]) - 1)
-    save_books(books)
+    if int(book[5]) <= 0:
+        print("Book ios not Available")
+        return
 
-    # Save transaction
+    book[5] = str(int(book[5]) - 1)
+    save_csv(BOOK_FILE, books)
+
     transactions.append([date, book_id, student_id, "1"])
-    save_transactions(transactions)
+    save_csv(TRANS_FILE, transactions)
 
-    print("Book issued successfully")
+    print("Issued")
 
 
 def return_book():
@@ -89,47 +54,52 @@ def return_book():
         print("Invalid Date")
         return
 
-    books = load_books()
-    transactions = load_transactions()
+    books = load_csv(BOOK_FILE)
+    students = load_csv(STUDENT_FILE)
+    transactions = load_csv(TRANS_FILE)
 
     # Check book exists
-    book_found = None
-    for book in books:
-        if book[0] == book_id:
-            book_found = book
-            break
-
-    if not book_found:
+    book = next((b for b in books if b[0] == book_id), None)
+    if not book:
         print("Invalid Book ID")
         return
 
-    # Check issued before returning
-    issued = False
-    for t in transactions:
-        if t[1] == book_id and t[2] == student_id and t[3] == "1":
-            issued = True
+    # Check student exists
+    if not any(s[0] == student_id for s in students):
+        print("Invalid Student ID")
+        return
+
+    # Check if book was issued
+    issued = any(
+        t[1] == book_id and t[2] == student_id and t[3] == "1"
+        for t in transactions
+    )
 
     if not issued:
-        print("Book was not issued")
+        print("Book was not issued to this student")
         return
 
     # Check already returned
-    for t in transactions:
-        if t[1] == book_id and t[2] == student_id and t[3] == "2":
-            print("Book already returned")
-            return
+    returned = any(
+        t[1] == book_id and t[2] == student_id and t[3] == "2"
+        for t in transactions
+    )
+
+    if returned:
+        print("Book already returned")
+        return
 
     # Update availability
-    if int(book_found[5]) < int(book_found[4]):
-        book_found[5] = str(int(book_found[5]) + 1)
+    if int(book[5]) < int(book[4]):
+        book[5] = str(int(book[5]) + 1)
     else:
         print("Availability exceeds copies")
         return
 
-    save_books(books)
+    save_csv(BOOK_FILE, books)
 
     # Save transaction
     transactions.append([date, book_id, student_id, "2"])
-    save_transactions(transactions)
+    save_csv(TRANS_FILE, transactions)
 
     print("Book returned successfully")

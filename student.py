@@ -1,55 +1,28 @@
-import csv
-import re
-import os
+from file_handler import load_csv, save_csv
+from validation import *
 
 FILE_PATH = "../data/student.csv"
 
-def validate_student_id(student_id):
-    return bool(re.fullmatch(r"\d{8}", student_id))
-
-
-def validate_name(name):
-    return bool(re.fullmatch(r"[A-Za-z]{1,10}", name))
-
-
-def load_students():
-    students = []
-    if not os.path.exists(FILE_PATH):
-        return students
-
-    with open(FILE_PATH, mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            students.append(row)
-    return students
-
-
-def save_students(students):
-    with open(FILE_PATH, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(students)
-
 
 def add_student():
-    student_id = input("Enter Student ID (8 digits): ")
+    student_id = input("Enter Student ID: ")
     if not validate_student_id(student_id):
-        print("Invalid Student ID")
+        print("Invalid ID")
         return
 
-    name = input("Enter First Name: ")
+    name = input("Enter Name: ")
     if not validate_name(name):
         print("Invalid Name")
         return
 
-    students = load_students()
+    students = load_csv(FILE_PATH)
 
-    # Check duplicate
-    for student in students:
-        if student[0] == student_id:
-            print("Student already exists")
+    for s in students:
+        if s[0] == student_id:
+            print("Already exists")
             return
 
     students.append([student_id, name])
-    save_students(students)
+    save_csv(FILE_PATH, students)
 
-    print("Student added successfully")
+    print("Student added")
