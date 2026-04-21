@@ -83,7 +83,7 @@ def main():
             transaction_menu()
         elif choice == "4":
             generate_graph()
-        elif choice == "5.":
+        elif choice == "5":
             print("Exit from the System")
             break
         else:

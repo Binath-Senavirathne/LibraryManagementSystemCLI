@@ -28,12 +28,19 @@ def issue_book():
         print("Invalid student ID")
         return
 
-    if any(t[1] == book_id and t[2] == student_id and t[3] == "1" for t in transactions):
+    currently_issued = any(
+        t[1] == book_id and t[2] == student_id and t[3] == "1"
+        for t in transactions
+    ) and not any(
+        t[1] == book_id and t[2] == student_id and t[3] == "2"
+        for t in transactions
+    )
+    if currently_issued:
         print("Book already issued")
         return
 
     if int(book[5]) <= 0:
-        print("Book ios not Available")
+        print("Book is not Available")
         return
 
     book[5] = str(int(book[5]) - 1)

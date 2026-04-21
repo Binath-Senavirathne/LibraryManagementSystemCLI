@@ -8,8 +8,13 @@ def load_csv(file_path):
 
     with open(file_path, mode='r', newline='') as file:
         reader = csv.reader(file)
+        header = True
         for row in reader:
-            data.append(row)
+            if header:
+                header = False
+                continue
+            if row:
+                data.append(row)
     return data
 
 
