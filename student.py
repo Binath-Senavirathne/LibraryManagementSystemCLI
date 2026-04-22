@@ -19,10 +19,21 @@ def add_student():
 
     for s in students:
         if s[0] == student_id:
-            print("Already exists")
+            print("Student already exists")
             return
 
     students.append([student_id, name])
     save_csv(FILE_PATH, students)
 
-    print("Student added")
+    print("Student added to the System")
+
+def view_all_students():
+    students = load_csv(FILE_PATH)
+
+    if not students:
+        print("No students found")
+        return
+
+    for s in students:
+        print(f"ID: {s[0]} , Name: {s[1]}")
+

@@ -10,6 +10,14 @@ def add_book():
         print("Invalid Book ID")
         return
 
+    books = load_csv(FILE_PATH)
+
+    for book in books:
+        if book[0] == book_id:
+            print("Book ID exists")
+            return
+
+
     isbn = input("Enter ISBN-13: ")
     if not validate_isbn13(isbn):
         print("Invalid ISBN")
@@ -32,13 +40,6 @@ def add_book():
         print("Invalid Price")
         return
 
-    books = load_csv(FILE_PATH)
-
-    for book in books:
-        if book[0] == book_id:
-            print("Book ID exists")
-            return
-
     books.append([book_id, title, isbn, author, copies, copies, price])
     save_csv(FILE_PATH, books)
 
@@ -52,8 +53,11 @@ def view_books():
 
 def search_book():
     search_id = input("Enter Book ID: ")
-
     books = load_csv(FILE_PATH)
+
+    if not validate_book_id(search_id):
+        print("Invalid Book ID")
+        return
 
     for book in books:
         if book[0] == search_id:
@@ -90,9 +94,16 @@ def edit_book():
                 print("Invalid Price")
                 return
 
+            new_copies = input("Enter New Copies: ")
+            if not validate_copies(new_copies):
+                print("Invalid Copies")
+                return
+
             books[i][1] = new_title
             books[i][3] = new_author
+            books[i][5] = new_copies
             books[i][6] = new_price
+
 
             save_csv(FILE_PATH, books)
 

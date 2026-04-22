@@ -1,7 +1,7 @@
 import re
 
 def validate_book_id(book_id):
-    return bool(re.fullmatch(r"[A-Za-z]{2}\d{2}", book_id))
+    return bool(re.fullmatch(r"[A-Z]{2}\d{2}", book_id))
 
 
 def validate_title(title):
