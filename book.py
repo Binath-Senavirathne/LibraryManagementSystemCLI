@@ -3,7 +3,7 @@ from validation import *
 
 FILE_PATH = "../data/book.csv"
 
-
+#Add Book
 def add_book():
     book_id = input("Enter Book ID: ")
     if not validate_book_id(book_id):
@@ -14,7 +14,7 @@ def add_book():
 
     for book in books:
         if book[0] == book_id:
-            print("Book ID exists")
+            print("Book ID already exists")
             return
 
 
@@ -43,14 +43,16 @@ def add_book():
     books.append([book_id, title, isbn, author, copies, copies, price])
     save_csv(FILE_PATH, books)
 
-    print("Book added")
+    print("Book " +title+ " added to the System")
 
-
+#View Book
 def view_books():
     books = load_csv(FILE_PATH)
     for book in books:
         print(book)
 
+
+#Search Book
 def search_book():
     search_id = input("Enter Book ID: ")
     books = load_csv(FILE_PATH)
@@ -73,6 +75,8 @@ def search_book():
 
     print("Book not found")
 
+
+#Edit Book
 def edit_book():
     book_id = input("Enter Book ID : ")
 

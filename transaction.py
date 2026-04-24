@@ -6,7 +6,7 @@ BOOK_FILE = "../data/book.csv"
 STUDENT_FILE = "../data/student.csv"
 TRANS_FILE = "../data/transactions.csv"
 
-
+#Issue Book
 def issue_book():
     books = load_csv(BOOK_FILE)
     students = load_csv(STUDENT_FILE)
@@ -22,7 +22,7 @@ def issue_book():
     if not any(s[0] == student_id for s in students):
         print("Invalid student ID")
         return
-
+    #Check book issued to student or not
     currently_issued = any(
         t[1] == book_id and t[2] == student_id and t[3] == "1"
         for t in transactions
@@ -51,7 +51,7 @@ def issue_book():
 
     print("Book Issued")
 
-
+#Return Book
 def return_book():
     books = load_csv(BOOK_FILE)
     students = load_csv(STUDENT_FILE)

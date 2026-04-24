@@ -3,7 +3,7 @@ from validation import *
 
 FILE_PATH = "../data/student.csv"
 
-
+#Add Student
 def add_student():
     student_id = input("Enter Student ID: ")
     if not validate_student_id(student_id):
@@ -25,8 +25,10 @@ def add_student():
     students.append([student_id, name])
     save_csv(FILE_PATH, students)
 
-    print("Student added to the System")
+    print("Student " +name+ " added to the System")
 
+
+#View Students
 def view_all_students():
     students = load_csv(FILE_PATH)
 
